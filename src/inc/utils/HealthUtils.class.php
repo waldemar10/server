@@ -139,57 +139,77 @@ class HealthUtils {
    * @param int $hashtypeId
    * @param int $type
    * @param int $crackerBinaryId
+   * @param string $agentIds
    * @return HealthCheck
    * @throws HTException
    */
-  public static function createHealthCheck($hashtypeId, $type, $crackerBinaryId) {
+  public static function createHealthCheck($hashtypeId, $type, $crackerBinaryId, $agentIds) {
     $crackerBinary = Factory::getCrackerBinaryFactory()->get($crackerBinaryId);
     if ($crackerBinary == null) {
-      throw new HTException("Invalid cracker binary selected!");
+        throw new HTException("Invalid cracker binary selected!");
+    } else if ($type != DHealthCheckType::BRUTE_FORCE) {
+        throw new HTException("Invalid health check type!");
     }
-    else if ($type != DHealthCheckType::BRUTE_FORCE) {
-      throw new HTException("Invalid health check type!");
-    }
-    
-    // we use len 5 here, but this can be adjusted depending on the agents abilities
+
+    // we use len 5 here, but this can be adjusted depending on the agents' abilities
     $hashes = [];
     $numHashes = HealthUtils::getAttackNumHashes($hashtypeId);
     $expected = rand(0.1 * $numHashes, 0.8 * $numHashes);
     for ($i = 0; $i < $numHashes; $i++) {
-      $hashes[] = HealthUtils::generateHash($hashtypeId, HealthUtils::getAttackPlain($hashtypeId, $type, $i < $expected));
+        $hashes[] = HealthUtils::generateHash($hashtypeId, HealthUtils::getAttackPlain($hashtypeId, $type, $i < $expected));
     }
-    
+
     $cmd = SConfig::getInstance()->getVal(DConfig::HASHLIST_ALIAS) . HealthUtils::getAttackMode($type) . HealthUtils::getAttackInput($hashtypeId, $type);
-    
+
     // create check
     $healthCheck = new HealthCheck(null,
-      time(),
-      DHealthCheckStatus::PENDING,
-      $type,
-      $hashtypeId,
-      $crackerBinaryId,
-      $expected,
-      $cmd
+        time(),
+        DHealthCheckStatus::PENDING,
+        $type,
+        $hashtypeId,
+        $crackerBinaryId,
+        $expected,
+        $cmd,
+        $agentIds
     );
     $healthCheck = Factory::getHealthCheckFactory()->save($healthCheck);
-    
+
     // save hashes
     $filename = "/tmp/health-check-" . $healthCheck->getId() . ".txt";
     file_put_contents($filename, implode("\n", $hashes));
-    
-    // check if file actually exists
+
+    // check if the file actually exists
     if (!file_exists($filename)) {
-      Factory::getHealthCheckFactory()->delete($healthCheck);
-      throw new HTException("Failed to create hashes in tmp directory!");
+        Factory::getHealthCheckFactory()->delete($healthCheck);
+        throw new HTException("Failed to create hashes in the tmp directory!");
     }
-    
-    // apply it to all agents
-    $agents = Factory::getAgentFactory()->filter([]);
+
     $entries = [];
-    foreach ($agents as $agent) {
-      $entries[] = new HealthCheckAgent(null, $healthCheck->getId(), $agent->getId(), DHealthCheckAgentStatus::PENDING, 0, 0, 0, 0, "");
-    }
+    $agentIdsArray = explode(',', $agentIds);
+    
+    foreach ($agentIdsArray as $agentId) {
+      $agent = Factory::getAgentFactory()->get($agentId);
+      
+      if ($agent !== null) {
+          $entries[] = new HealthCheckAgent(
+              null,
+              $healthCheck->getId(),
+              $agent->getId(),
+              DHealthCheckAgentStatus::PENDING,
+              0,
+              0,
+              0,
+              0,
+              ""
+          );
+      } else {
+          // Handle the case where the specified agent ID is invalid
+          Factory::getHealthCheckFactory()->delete($healthCheck);
+          throw new HTException("Invalid agent ID specified: $agentId");
+      }
+    }    
     Factory::getHealthCheckAgentFactory()->massSave($entries);
+
     return $healthCheck;
   }
   

@@ -11,8 +11,9 @@ class HealthCheck extends AbstractModel {
   private $crackerBinaryId;
   private $expectedCracks;
   private $attackCmd;
+  private $agentIds;
   
-  function __construct($healthCheckId, $time, $status, $checkType, $hashtypeId, $crackerBinaryId, $expectedCracks, $attackCmd) {
+  function __construct($healthCheckId, $time, $status, $checkType, $hashtypeId, $crackerBinaryId, $expectedCracks, $attackCmd, $agentIds) {
     $this->healthCheckId = $healthCheckId;
     $this->time = $time;
     $this->status = $status;
@@ -21,6 +22,7 @@ class HealthCheck extends AbstractModel {
     $this->crackerBinaryId = $crackerBinaryId;
     $this->expectedCracks = $expectedCracks;
     $this->attackCmd = $attackCmd;
+    $this->agentIds = $agentIds;
   }
   
   function getKeyValueDict() {
@@ -33,6 +35,7 @@ class HealthCheck extends AbstractModel {
     $dict['crackerBinaryId'] = $this->crackerBinaryId;
     $dict['expectedCracks'] = $this->expectedCracks;
     $dict['attackCmd'] = $this->attackCmd;
+    $dict['agentIds'] = $this->agentIds;
     
     return $dict;
   }
@@ -47,6 +50,7 @@ class HealthCheck extends AbstractModel {
     $dict['crackerBinaryId'] = ['read_only' => False, "type" => "int", "subtype" => "unset", "choices" => "unset", "null" => False, "pk" => False, "protected" => False, "private" => False, "alias" => "crackerBinaryId"];
     $dict['expectedCracks'] = ['read_only' => True, "type" => "int", "subtype" => "unset", "choices" => "unset", "null" => False, "pk" => False, "protected" => True, "private" => False, "alias" => "expectedCracks"];
     $dict['attackCmd'] = ['read_only' => True, "type" => "str(256)", "subtype" => "unset", "choices" => "unset", "null" => False, "pk" => False, "protected" => True, "private" => False, "alias" => "attackCmd"];
+    $dict['agentIds'] = ['read_only' => False, "type" => "string", "subtype" => "unset", "choices" => "unset", "null" => False, "pk" => False, "protected" => False, "private" => False, "alias" => "agentIds"];
 
     return $dict;
   }
@@ -130,6 +134,14 @@ class HealthCheck extends AbstractModel {
   function setAttackCmd($attackCmd) {
     $this->attackCmd = $attackCmd;
   }
+
+  public function getAgentIds() {
+    return $this->agentIds;
+  }
+
+  public function setAgentIds($agentIds) {
+      $this->agentIds = (array)$agentIds;
+  }
   
   const HEALTH_CHECK_ID = "healthCheckId";
   const TIME = "time";
@@ -139,6 +151,7 @@ class HealthCheck extends AbstractModel {
   const CRACKER_BINARY_ID = "crackerBinaryId";
   const EXPECTED_CRACKS = "expectedCracks";
   const ATTACK_CMD = "attackCmd";
+  const AGENT_IDS = "agentIds";
 
   const PERM_CREATE = "permHealthCheckCreate";
   const PERM_READ = "permHealthCheckRead";
