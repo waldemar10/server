@@ -72,6 +72,16 @@ class HealthUtils {
         return; // we can stop here, at least one agent has not finished yet
       }
     }
+    
+    //Set agents to active if the check didnt throw any errors
+    foreach ($checks as $check) {
+      $agent = Factory::getAgentFactory()->get($check->getAgentId());
+
+      if ($agent && $agent->getIsActive() == 0 && $check->getErrors() == "") {
+          Factory::getAgentFactory()->set($agent, Agent::IS_ACTIVE, 1);
+      }
+    }
+    
     Factory::getHealthCheckFactory()->set($healthCheck, HealthCheck::STATUS, DHealthCheckStatus::COMPLETED);
   }
   
