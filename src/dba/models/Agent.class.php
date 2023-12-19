@@ -19,8 +19,11 @@ class Agent extends AbstractModel {
   private $userId;
   private $cpuOnly;
   private $clientSignature;
+  private $cpuTemp;
+  private $cpuUtil;
+  private $deviceUtil;
   
-  function __construct($agentId, $agentName, $uid, $os, $devices, $cmdPars, $ignoreErrors, $isActive, $isTrusted, $token, $lastAct, $lastTime, $lastIp, $userId, $cpuOnly, $clientSignature) {
+  function __construct($agentId, $agentName, $uid, $os, $devices, $cmdPars, $ignoreErrors, $isActive, $isTrusted, $token, $lastAct, $lastTime, $lastIp, $userId, $cpuOnly, $clientSignature, $cpuTemp, $cpuUtil, $deviceUtil) {
     $this->agentId = $agentId;
     $this->agentName = $agentName;
     $this->uid = $uid;
@@ -37,6 +40,9 @@ class Agent extends AbstractModel {
     $this->userId = $userId;
     $this->cpuOnly = $cpuOnly;
     $this->clientSignature = $clientSignature;
+    $this->cpuTemp = $cpuTemp;
+    $this->cpuUtil = $cpuUtil;
+    $this->deviceUtil = $deviceUtil;
   }
   
   function getKeyValueDict() {
@@ -57,6 +63,9 @@ class Agent extends AbstractModel {
     $dict['userId'] = $this->userId;
     $dict['cpuOnly'] = $this->cpuOnly;
     $dict['clientSignature'] = $this->clientSignature;
+    $dict['cpuTemp'] = $this->cpuTemp;
+    $dict['cpuUtil'] = $this->cpuUtil;
+    $dict['deviceUtil'] = $this->deviceUtil;
     
     return $dict;
   }
@@ -79,6 +88,9 @@ class Agent extends AbstractModel {
     $dict['userId'] = ['read_only' => False, "type" => "int", "subtype" => "unset", "choices" => "unset", "null" => True, "pk" => False, "protected" => False, "private" => False, "alias" => "userId"];
     $dict['cpuOnly'] = ['read_only' => False, "type" => "bool", "subtype" => "unset", "choices" => "unset", "null" => False, "pk" => False, "protected" => False, "private" => False, "alias" => "cpuOnly"];
     $dict['clientSignature'] = ['read_only' => False, "type" => "str(50)", "subtype" => "unset", "choices" => "unset", "null" => False, "pk" => False, "protected" => False, "private" => False, "alias" => "clientSignature"];
+    $dict['cpuTemp'] = ['read_only' => False, "type" => "str(50)", "subtype" => "unset", "choices" => "unset", "null" => False, "pk" => False, "protected" => False, "private" => False, "alias" => "cpuTemp"];
+    $dict['cpuUtil'] = ['read_only' => False, "type" => "str(50)", "subtype" => "unset", "choices" => "unset", "null" => False, "pk" => False, "protected" => False, "private" => False, "alias" => "cpuUtil"];
+    $dict['deviceUtil'] = ['read_only' => False, "type" => "str(50)", "subtype" => "unset", "choices" => "unset", "null" => False, "pk" => False, "protected" => False, "private" => False, "alias" => "deviceUtil"];
 
     return $dict;
   }
@@ -226,6 +238,30 @@ class Agent extends AbstractModel {
   function setClientSignature($clientSignature) {
     $this->clientSignature = $clientSignature;
   }
+
+  function getCpuTemp() {
+    return $this->cpuTemp;
+  }
+  
+  function setCpuTemp($cpuTemp) {
+    $this->cpuTemp = $cpuTemp;
+  }
+
+  function getCpuUtil() {
+    return $this->cpuUtil;
+  }
+  
+  function setCpuUtil($cpuUtil) {
+    $this->cpuUtil = $cpuUtil;
+  }
+
+  function getDeviceUtil() {
+    return $this->deviceUtil;
+  }
+  
+  function setDeviceUtil($devcieUtil) {
+    $this->deviceUtil = $devcieUtil;
+  }
   
   const AGENT_ID = "agentId";
   const AGENT_NAME = "agentName";
@@ -243,6 +279,10 @@ class Agent extends AbstractModel {
   const USER_ID = "userId";
   const CPU_ONLY = "cpuOnly";
   const CLIENT_SIGNATURE = "clientSignature";
+  
+  const CPU_TEMP = "cpuTemp";
+  const CPU_UTIL = "cpuUtil";
+  const DEVICE_UTIL = "deviceUtil";
 
   const PERM_CREATE = "permAgentCreate";
   const PERM_READ = "permAgentRead";
