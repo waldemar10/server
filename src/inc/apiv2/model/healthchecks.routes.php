@@ -36,7 +36,8 @@ class HealthCheckAPI extends AbstractModelAPI {
       $obj = HealthUtils::createHealthCheck(
         $data[HealthCheck::HASHTYPE_ID],
         $data[HealthCheck::CHECK_TYPE],
-        $data[HealthCheck::CRACKER_BINARY_ID]
+        $data[HealthCheck::CRACKER_BINARY_ID],
+        $data[HealthCheck::AGENT_IDS]
       );
 
       return $obj->getId();
