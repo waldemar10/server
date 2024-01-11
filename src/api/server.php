@@ -129,6 +129,12 @@ switch ($QUERY[PQuery::ACTION]) {
   case PActions::DEREGISTER:
     $api = new APIDeRegisterAgent();
     break;
+  /**
+   * Shutdown Agent
+   */
+  case PActions::SHUTDOWN:
+    $api = new APIShutdownAgent();
+    break;
 }
 
 DServerLog::log(DServerLog::TRACE, "Received from " . Util::getIP() . ": " . json_encode($QUERY));

@@ -409,6 +409,10 @@ class PResponseGetFound extends PResponse {
   const URL = "url";
 }
 
+class PResponseGetShutdown extends PResponse {
+  const SHUTDOWN = "shutdown";
+}
+
 ######################
 # Action definitions #
 ######################
@@ -433,4 +437,5 @@ class PActions {
   const SEND_HEALTH_CHECK         = "sendHealthCheck";
   const GET_FOUND                 = "getFound";
   const DEREGISTER                = "deregister";
+  const SHUTDOWN                  = "shutdown";
 }

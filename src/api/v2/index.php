@@ -273,5 +273,6 @@ require __DIR__ . "/../../inc/apiv2/helper/importFile.routes.php";
 require __DIR__ . "/../../inc/apiv2/helper/purgeTask.routes.php";
 require __DIR__ . "/../../inc/apiv2/helper/resetChunk.routes.php";
 require __DIR__ . "/../../inc/apiv2/helper/setUserPassword.routes.php";
+require __DIR__ . "/../../inc/apiv2/helper/shutdown.routes.php";
 
 $app->run();
