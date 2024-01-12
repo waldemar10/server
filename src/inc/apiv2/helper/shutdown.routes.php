@@ -1,5 +1,4 @@
 <?php
-use DBA\Chunk;
 
 require_once(dirname(__FILE__) . "/../common/AbstractHelperAPI.class.php");
 
@@ -38,12 +37,12 @@ class RunCommandHelperAPI extends AbstractHelperAPI {
       $agentIdsArray = explode(',', $agentIds);
 
       foreach ($agentIdsArray as $agentId) {
-          fwrite($file, $agentId . PHP_EOL);
+        fwrite($file, $agentId . PHP_EOL);
       }
 
-      return "File '$filename' has been created and written successfully.";
+      return;
     } else {
-      return "Unable to open the file '$filename'.";
+      return "Unable to read the shutdown file";
     }
   }
 
@@ -53,7 +52,7 @@ class RunCommandHelperAPI extends AbstractHelperAPI {
 
     $output = $this->createFile($timestamp, $agentIds);
    
-    return ['output' => $output];
+    return ['error' => $output];
   }  
 }
 
