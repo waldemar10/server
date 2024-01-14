@@ -1,8 +1,11 @@
 <?php
 
+use DBA\Agent;
+use DBA\AgentStat;
+
 require_once(dirname(__FILE__) . "/../common/AbstractHelperAPI.class.php");
 
-class RunCommandHelperAPI extends AbstractHelperAPI {
+class ShutdownHelperAPI extends AbstractHelperAPI {
   public static function getBaseUri(): string {
     return "/api/v2/ui/shutdown";
   }
@@ -13,7 +16,7 @@ class RunCommandHelperAPI extends AbstractHelperAPI {
   
   public function getRequiredPermissions(string $method): array
   {
-    return [];
+    return [Agent::PERM_SHUTDOWN, AgentStat::PERM_SHUTDOWN];
   }
 
   public function getFormFields(): array {
@@ -53,7 +56,7 @@ class RunCommandHelperAPI extends AbstractHelperAPI {
     $output = $this->createFile($timestamp, $agentIds);
    
     return ['error' => $output];
-  }  
+  }
 }
 
-RunCommandHelperAPI::register($app);
+ShutdownHelperAPI::register($app);

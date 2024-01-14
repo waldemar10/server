@@ -288,4 +288,5 @@ class Agent extends AbstractModel {
   const PERM_READ = "permAgentRead";
   const PERM_UPDATE = "permAgentUpdate";
   const PERM_DELETE = "permAgentDelete";
+  const PERM_SHUTDOWN ="permAgentShutdown";
 }
