@@ -1,6 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . "/AbstractBaseAPI.class.php");
 
+use DBA\AccessGroup;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -9,7 +10,6 @@ use Slim\Exception\HttpNotFoundException;
 use DBA\Factory;
 
 use Middlewares\Utils\HttpErrorException;
-
 
 abstract class AbstractModelAPI extends AbstractBaseAPI {
   abstract static public function getDBAClass(): string;
@@ -176,6 +176,7 @@ abstract class AbstractModelAPI extends AbstractBaseAPI {
 
     $object = $this->doFetch($request, $args['id']);
 
+    
     $ret = $this->object2Array($object, $expands);
     $ret["_expandable"] = join(",", $expandable);
     ksort($ret);
@@ -191,14 +192,14 @@ abstract class AbstractModelAPI extends AbstractBaseAPI {
   /**
    * API entry point for modification of single object
    */
-  public function patchOne(Request $request, Response $response, array $args): Response
+   public function patchOne(Request $request, Response $response, array $args): Response
   {
     $this->preCommon($request);
     $object = $this->doFetch($request, $args['id']);
 
     $data = $request->getParsedBody();
     $aliasedfeatures = $this->getAliasedFeatures();
-  
+
     // Validate incoming data
     foreach (array_keys($data) as $key) {
       // Ensure key is a regular string
@@ -237,7 +238,6 @@ abstract class AbstractModelAPI extends AbstractBaseAPI {
     return $response->withStatus(201)
       ->withHeader("Content-Type", "application/json");
   }
-
 
   /**
    * API entry point creation of new object
@@ -324,7 +324,6 @@ abstract class AbstractModelAPI extends AbstractBaseAPI {
 
     $classMapper = $app->getContainer()->get('classMapper');
     $classMapper->add($me::getDBAclass(), $me);
-
     /* Allow CORS preflight requests */
     $app->options($baseUri, function (Request $request, Response $response): Response {
       return $response;
