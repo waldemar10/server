@@ -97,6 +97,7 @@ class AccessGroupUtils {
     
     $accessGroupAgent = new AccessGroupAgent(null, $group->getId(), $agent->getId());
     Factory::getAccessGroupAgentFactory()->save($accessGroupAgent);
+    return $accessGroupAgent;
   }
   
   /**
@@ -134,7 +135,9 @@ class AccessGroupUtils {
     if ($accessGroupAgent === null) {
       throw new HTException("Agent is not member of this group!");
     }
+    $saveAccessGroupAgent = $accessGroupAgent;
     Factory::getAccessGroupAgentFactory()->delete($accessGroupAgent);
+    return $saveAccessGroupAgent;
   }
   
   /**
@@ -200,4 +203,25 @@ class AccessGroupUtils {
     }
     return $group;
   }
+  public static function getGroupsByAgentId($agentId) {
+    // QueryFilter für den Agenten erstellen
+    $agentFilter = new QueryFilter(AccessGroupAgent::AGENT_ID, $agentId, "=");
+
+    // AccessGroupAgent-Objekte für den Agenten abrufen
+    $agentGroups = Factory::getAccessGroupAgentFactory()->filter([Factory::FILTER => $agentFilter]);
+
+    // Zugriffsgruppen-IDs sammeln
+    $groupIds = [];
+    foreach ($agentGroups as $agentGroup) {
+        $groupIds[] = $agentGroup->getAccessGroupId();
+    }
+
+    // AccessGroup-Objekte für die gefundenen Gruppen-IDs abrufen
+    $groups = [];
+    foreach ($groupIds as $groupId) {
+        $groups[] = self::getGroup($groupId);
+    }
+
+    return $groupIds;
+}
 }

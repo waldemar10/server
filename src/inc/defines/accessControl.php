@@ -26,6 +26,7 @@ class DAccessControl {
   const SERVER_CONFIG_ACCESS        = "serverConfigAccess";
   const USER_CONFIG_ACCESS          = "userConfigAccess";
   const MANAGE_ACCESS_GROUP_ACCESS  = "manageAccessGroupAccess";
+  const MANAGE_ACCESS_GROUP_AGENT_ACCESS   = "manageAccessGroupAgentAccess";
   
   // special access definitions for public access pages and pages which are viewable if logged in
   const PUBLIC_ACCESS = "publicAccess";
@@ -102,6 +103,8 @@ class DAccessControl {
         return "Can manage preconfigured supertasks.";
       case DAccessControl::MANAGE_ACCESS_GROUP_ACCESS:
         return "Can manage access groups.";
+      case DAccessControl::MANAGE_ACCESS_GROUP_AGENT_ACCESS:
+        return "Can manage access groups for agents.";
     }
     return "__" . $access . "__";
   }

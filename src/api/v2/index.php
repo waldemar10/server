@@ -239,6 +239,7 @@ require __DIR__ . "/../../inc/apiv2/auth/token.routes.php";
 require __DIR__ . "/../../inc/apiv2/common/openAPISchema.routes.php";
 
 require __DIR__ . "/../../inc/apiv2/model/accessgroups.routes.php";
+require __DIR__ . "/../../inc/apiv2/model/accessgroupsagent.routes.php";
 require __DIR__ . "/../../inc/apiv2/model/agentassignments.routes.php";
 require __DIR__ . "/../../inc/apiv2/model/agentbinaries.routes.php";
 require __DIR__ . "/../../inc/apiv2/model/agents.routes.php";

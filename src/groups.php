@@ -12,17 +12,21 @@ use DBA\Factory;
 
 require_once(dirname(__FILE__) . "/inc/load.php");
 
+
+// check if user is logged in
 if (!Login::getInstance()->isLoggedin()) {
   header("Location: index.php?err=4" . time() . "&fw=" . urlencode($_SERVER['PHP_SELF'] . "?" . $_SERVER['QUERY_STRING']));
   die();
 }
-
+// check if user has the right to view this page
 AccessControl::getInstance()->checkPermission(DViewControl::GROUPS_VIEW_PERM);
 
+// load the template engine
 Template::loadInstance("groups/index");
+// set active menu entry
 Menu::get()->setActive("users_groups");
 
-//catch actions here...
+// handle actions (create, delete, ...)
 if (isset($_POST['action']) && CSRF::check($_POST['csrf'])) {
   $accessGroupHandler = new AccessGroupHandler();
   $accessGroupHandler->handle($_POST['action']);
@@ -31,11 +35,14 @@ if (isset($_POST['action']) && CSRF::check($_POST['csrf'])) {
   }
 }
 
+// handle subpages (new, detail, ...)
 if (isset($_GET['new'])) {
+  
   Template::loadInstance("groups/new");
   UI::add('pageTitle', "Create Group");
 }
 else if (isset($_GET['id'])) {
+  // load group
   $group = Factory::getAccessGroupFactory()->get($_GET['id']);
   if ($group == null) {
     UI::printError("ERROR", "Invalid group!");

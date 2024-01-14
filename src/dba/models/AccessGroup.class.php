@@ -15,10 +15,12 @@ class AccessGroup extends AbstractModel {
     $dict = array();
     $dict['accessGroupId'] = $this->accessGroupId;
     $dict['groupName'] = $this->groupName;
-    
     return $dict;
   }
-  
+  private static $expandables = [];
+  public static function setExpandables(array $expandables) {
+    self::$expandables = $expandables;
+}
   static function getFeatures() {
     $dict = array();
     $dict['accessGroupId'] = ['read_only' => True, "type" => "int", "subtype" => "unset", "choices" => "unset", "null" => False, "pk" => True, "protected" => True, "private" => False, "alias" => "accessGroupId"];
@@ -58,7 +60,7 @@ class AccessGroup extends AbstractModel {
   function setGroupName($groupName) {
     $this->groupName = $groupName;
   }
-  
+
   const ACCESS_GROUP_ID = "accessGroupId";
   const GROUP_NAME = "groupName";
 

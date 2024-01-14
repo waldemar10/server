@@ -40,13 +40,13 @@ class AgentAssignmentAPI extends AbstractModelAPI {
 
     protected function createObject(array $data): int {
       AgentUtils::assign($data[Assignment::AGENT_ID], $data[Assignment::TASK_ID], $this->getCurrentUser());
-      /* On succesfully insert, return ID */
+     
       $qFs = [
         new QueryFilter(Assignment::AGENT_ID, $data[Assignment::AGENT_ID], '='),
         new QueryFilter(Assignment::TASK_ID, $data[Assignment::TASK_ID], '=')
       ];
 
-      /* Hackish way to retreive object since Id is not returned on creation */
+     
       $oF = new OrderFilter(Assignment::ASSIGNMENT_ID, "DESC");
       $objects = $this->getFactory()->filter([Factory::FILTER => $qFs, Factory::ORDER => $oF]);
       assert(count($objects) >= 1);
