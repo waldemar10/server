@@ -1,4 +1,5 @@
 <?php
+use DBA\Factory;
 
 class APIShutdownAgent extends APIBasic {
   public function execute($QUERY = array()) {
@@ -18,7 +19,7 @@ class APIShutdownAgent extends APIBasic {
         $fileContent = [];
 
         while (($line = fgets($file)) !== false) {
-            $fileContent[] = trim($line);
+          $fileContent[] = trim($line);
         }
 
         fclose($file);
@@ -26,15 +27,17 @@ class APIShutdownAgent extends APIBasic {
         $isValidAgent = $this->validateShutdownCommand($fileContent, $this->agent);
         
       } else {
-        $this->sendErrorResponse(PActions::GET_FILE, "Unable to open the file '$filepath' for reading.");
+        $this->sendErrorResponse(PActions::GET_FILE, "Unable to open the shutdown command file");
       }
     } else {
-      $this->sendErrorResponse(PActions::GET_FILE, "File '$filepath' does not exist.");
+      $this->sendErrorResponse(PActions::GET_FILE, "Shutdown file doesnt exist in '$filepath'");
     }
     
     if($isValidAgent){
       $this->updateAgent(PActions::SHUTDOWN );
       $this->sendResponse([PResponseGetShutdown::RESPONSE => PResponseGetShutdown::SHUTDOWN]);
+    } else {
+      $this->sendResponse([PResponseGetShutdown::RESPONSE => PResponseGetShutdown::EXPIRED]);
     }
   }
 
@@ -42,8 +45,11 @@ class APIShutdownAgent extends APIBasic {
     $timestamp = (int)$data[0];
     $currentTime = time();
     $agentId = $agent->getId();
+    $config = Factory::getConfigFactory()->get(11);
+    $responseWindow = (int) $config->getValue();
+    $buffer = 3; //buffer for potential delays in the requests
 
-    if (($currentTime - $timestamp) <= 10000) {
+    if (($currentTime - $timestamp) <= $responseWindow + $buffer) {
       for ($i = 1; $i < count($data); $i++) {
         if ($data[$i] == $agentId) {
           return true;

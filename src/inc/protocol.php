@@ -411,6 +411,7 @@ class PResponseGetFound extends PResponse {
 
 class PResponseGetShutdown extends PResponse {
   const SHUTDOWN = "shutdown";
+  const EXPIRED = "expired";
 }
 
 ######################
