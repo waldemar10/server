@@ -103,19 +103,37 @@ abstract class AbstractBaseAPI
   /**
    * Create features from formfields
    */
-  protected function getFeatures(): array
+  /* protected function getFeatures(): array
   {
     $features = [];
     foreach($this->getFormFields() as $key => $feature) {
-      /* Innitate default values */
+      
       $features[$key] = $feature + ['null' => False, 'protected' => False, 'private' => False, 'choices' => "unset"];
       if (!array_key_exists('alias', $feature)) {
         $features[$key]['alias'] = $key;
+       
       }
     }
+    
     return $features;
-  }
+  } */
 
+
+  protected function getFeatures(): array
+{
+    $features = [];
+
+    foreach ($this->getFormFields() as $key => $feature) {
+        /* Innitate default values */
+        $features[$key] = $feature + ['null' => false, 'protected' => false, 'private' => false, 'choices' => 'unset'];
+        if (!array_key_exists('alias', $feature)) {
+            $features[$key]['alias'] = $key;
+          /*   throw new HttpErrorException("Key '$key' invalid"); */
+        }
+    }
+
+    return $features;
+}
   /**
    * Take all the dba features and converts them to a list.
    * It uses the data from the generator and replaces the keys with the aliasses.
@@ -124,7 +142,9 @@ abstract class AbstractBaseAPI
   public function getAliasedFeatures(): array
   {
     $features = $this->getFeatures();
+
     $mappedFeatures = [];
+
     foreach ($features as $key => $value) {
       $mappedFeatures[$value['alias']] = $value;
       $mappedFeatures[$value['alias']]['dbname'] = $key;
@@ -158,6 +178,8 @@ abstract class AbstractBaseAPI
     switch($model) {
       case AccessGroup::class:
         return Factory::getAccessGroupFactory();
+      case AccessGroupAgent::class:
+        return Factory::getAccessGroupAgentFactory();
       case Agent::class:
         return Factory::getAgentFactory();
       case AgentBinary::class:
@@ -375,7 +397,9 @@ abstract class AbstractBaseAPI
     DAccessControl::USER_CONFIG_ACCESS => array(User::PERM_CREATE, User::PERM_READ, User::PERM_UPDATE, User::PERM_DELETE, RightGroup::PERM_CREATE, RightGroup::PERM_READ, RightGroup::PERM_UPDATE, RightGroup::PERM_DELETE),
 
     DAccessControl::MANAGE_ACCESS_GROUP_ACCESS => array(AccessGroup::PERM_CREATE, AccessGroup::PERM_READ, AccessGroup::PERM_UPDATE, AccessGroup::PERM_DELETE),
-
+    
+    DAccessControl::MANAGE_ACCESS_GROUP_AGENT_ACCESS => array(AccessGroupAgent::PERM_CREATE, AccessGroupAgent::PERM_READ, AccessGroupAgent::PERM_UPDATE, AccessGroupAgent::PERM_DELETE),
+    
     // src/inc/defines/accessControl.php
     DAccessControl::PUBLIC_ACCESS => array(LogEntry::PERM_READ),
 

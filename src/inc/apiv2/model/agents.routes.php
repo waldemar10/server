@@ -28,7 +28,7 @@ class AgentAPI extends AbstractModelAPI {
     public function getExpandables(): array {
       return ['accessGroups', 'agentstats'];
     }
-
+   
     protected function doExpand(object $object, string $expand): mixed {
       assert($object instanceof Agent);
       switch($expand) {
