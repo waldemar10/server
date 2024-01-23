@@ -45,7 +45,7 @@ class ShutdownHelperAPI extends AbstractHelperAPI {
 
       return;
     } else {
-      return "Unable to read the shutdown file";
+      return "Unable to create shutdown file";
     }
   }
 
