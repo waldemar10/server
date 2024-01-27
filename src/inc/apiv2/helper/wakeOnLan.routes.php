@@ -1,5 +1,7 @@
 <?php
 use DBA\Factory;
+use DBA\Agent;
+use DBA\AgentStat;
 
 require_once(dirname(__FILE__) . "/../common/AbstractHelperAPI.class.php");
 
@@ -14,7 +16,7 @@ class WakeOnLanHelperAPI extends AbstractHelperAPI {
   
   public function getRequiredPermissions(string $method): array
   {
-    return [];
+    return [Agent::PERM_WOL, AgentStat::PERM_WOL];
   }
 
   public function getFormFields(): array {
@@ -29,7 +31,7 @@ class WakeOnLanHelperAPI extends AbstractHelperAPI {
 
     // check if $macAddress is a valid mac address
     if (!ctype_xdigit($macAddressHexadecimal)) {
-        throw new \Exception('Mac address invalid, only 0-9 and a-f are allowed');
+      return 'Mac address invalid, only 0-9 and a-f are allowed';
     }
 
     $macAddressBinary = pack('H12', $macAddressHexadecimal);
@@ -37,7 +39,7 @@ class WakeOnLanHelperAPI extends AbstractHelperAPI {
     $magicPacket = str_repeat(chr(0xff), 6).str_repeat($macAddressBinary, 16);
 
     if (!$fp = fsockopen('udp://' . $broadcastAddress, 7, $errno, $errstr, 2)) {
-        throw new \Exception("Cannot open UDP socket: {$errstr}", $errno);
+      return "Cannot open UDP socket: {$errstr}, $errno";
     }
     fputs($fp, $magicPacket);
     fclose($fp);
@@ -58,18 +60,18 @@ class WakeOnLanHelperAPI extends AbstractHelperAPI {
     foreach ($agentIdsArray as $id) {
       $selectedAgents[] = Factory::getAgentFactory()->get($id);
     }
-    
+
     //Sorts agents by ip
-    usort($selectedAgents, 'compareAgentsByIP');
+    usort($selectedAgents, array($this, 'compareAgentsByIP'));
    
     foreach ($selectedAgents as $agent){
-      $this->createPackage($agent->getMac(), $agent->getLastIp());
+      $error = $this->createPackage($agent->getMac(), $agent->getLastIp());
       usleep(100000); // 0.1 seconds delay
+      if($error)
+        break;
     }
-
-    $output = "";
    
-    return ['error' => $output];
+    return ['error' => $error];
   }  
 }
 

@@ -106,4 +106,5 @@ class AgentStat extends AbstractModel {
   const PERM_UPDATE = "permAgentStatUpdate";
   const PERM_DELETE = "permAgentStatDelete";
   const PERM_SHUTDOWN = "permAgentStatShutdown";
+  const PERM_WOL = "permAgentStatWakeOnLan";
 }
