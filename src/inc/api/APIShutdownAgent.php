@@ -47,9 +47,8 @@ class APIShutdownAgent extends APIBasic {
     $agentId = $agent->getId();
     $config = Factory::getConfigFactory()->get(11);
     $responseWindow = (int) $config->getValue();
-    $buffer = 3; //buffer for potential delays in the requests
 
-    if (($currentTime - $timestamp) <= $responseWindow + $buffer) {
+    if (($currentTime - $timestamp) <= $responseWindow) {
       for ($i = 1; $i < count($data); $i++) {
         if ($data[$i] == $agentId) {
           return true;
